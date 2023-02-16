@@ -9,7 +9,7 @@ const MainNavigation = props => {
   return (
     <MainHeader>
       <h1 className="main-navigation__title">
-        <Link to="/">INSTAGRAM</Link>
+        <Link to="/">TWITTER</Link>
       </h1>
       <nav>
         <NavLinks />
