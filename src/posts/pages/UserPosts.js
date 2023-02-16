@@ -14,7 +14,7 @@ const POSTS = [
   {
     id: "p2",
     imageUrl:
-      "https://images2.thanhnien.vn/Uploaded/quocviet/2022_04_10/275292915-1172159740222684-1041239282763399363-n-3652.jpg",
+      "https://vtv1.mediacdn.vn/zoom/550_339/2020/12/31/ibra-16093727779431744658462.jpg",
     title: "Hello",
     content: "Hello",
     creator: "u2",

@@ -1,36 +1,27 @@
 import React from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Redirect,
-  Switch,
-} from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Users from "./user/pages/Users";
 import NewPost from "./posts/pages/NewPost";
-import MainNavigation from "./shared/components/Navigation/MainNavigation";
 import UserPosts from "./posts/pages/UserPosts";
+import Root from "./shared/components/Root/Root";
+import Error from "./shared/components/Error/Error";
 
 const App = () => {
-  return (
-    <Router>
-      <MainNavigation />
-      <main>
-        <Switch>
-          <Route path="/" exact>
-            <Users />
-          </Route>
-          <Route path="/:userId/posts" exact>
-            <UserPosts />
-          </Route>
-          <Route path="/posts/new" exact>
-            <NewPost />
-          </Route>
-          <Redirect to="/" />
-        </Switch>
-      </main>
-    </Router>
-  );
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Root />,
+      errorElement: <Error />,
+      children: [
+        { path: "/", element: <Users /> },
+        { path: "/:userId/posts", element: <UserPosts /> },
+        { path: "/posts/new", element: <NewPost /> },
+        { path: "/", element: <Users /> },
+      ],
+    },
+  ]);
+  return <RouterProvider router={router} />;
 };
 
 export default App;
