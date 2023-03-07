@@ -1,7 +1,6 @@
 import React from "react";
 import "./PostItem.css";
 import Card from "../../shared/components/UIElements/Card";
-import Button from "../../shared/components/FormElements/Button";
 
 const PostItem = (props) => {
   return (
@@ -15,9 +14,6 @@ const PostItem = (props) => {
           <p>{props.content}</p>
         </div>
         <div className="post-item__action">
-          <Button>Test</Button>
-          <Button>Test</Button>
-          <Button>Test</Button>
         </div>
       </Card>
     </li>

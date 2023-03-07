@@ -15,6 +15,7 @@
 }
 
 .nav-links a {
+  font-size: 1rem;
   border: 1px solid transparent;
   color: white;
   text-decoration: none;
@@ -28,3 +29,22 @@
   border-color: #292929;
   color: #292929;
 }
+
+.nav-links button {
+  font-size: 1rem;
+  border: 1px solid transparent;
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem;
+  background-color: #1DA1F2;
+}
+
+.nav-links button:hover,
+.nav-links button:active,
+.nav-links button.active { 
+  background: #f8df00;
+  border-color: #292929;
+  color: #292929;
+}
+
+

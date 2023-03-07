@@ -1,12 +1,37 @@
-.post-form {
-    list-style: none;
-    margin: 0 auto;
-    padding: 1rem;
-    width: 90%;
-    max-width: 40rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-    border-radius: 6px;
-    background: #F5F8FA
-    ;
-  }
-  
+.new-post {
+  width: 90%;
+  max-width: 25rem;
+  margin: 7rem auto;
+  text-align: center;
+}
+
+.new-post h2 {
+  text-align: center;
+  font-size: 2rem;
+}
+
+.new-post form {
+  margin-bottom: 1rem;
+}
+
+.new-post div {
+  text-align: center;
+}
+
+.new-post label {
+  text-align: left;
+  font-weight: bold;
+  display: block;
+}
+
+.new-post input {
+  font-size: 1rem;
+  min-width: 100%;
+  padding: 1rem;
+}
+
+.new-post textarea {
+  font-size: 1rem;
+  min-width: 100%;
+  padding: 1rem;
+}
