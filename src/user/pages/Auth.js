@@ -3,9 +3,11 @@ import Card from "../../shared/components/UIElements/Card";
 import "./Auth.css";
 import useInput from "../../shared/hooks/use-input";
 import AuthContext from "../../shared/context/auth-context";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 const Auth = () => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const switchModeHandler = () => {
     setIsLoginMode((prevMode) => !prevMode);
@@ -38,16 +40,46 @@ const Auth = () => {
     reset: resetName,
   } = useInput((enteredName) => enteredName.trim() !== "");
 
-  const authSubmitHandler = (e) => {
+  const authSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log({ enteredName, enteredEmail, enteredPassword });
-    auth.login();
+    if (isLoginMode) {
+    } else {
+      try {
+        setIsLoading(true);
+        const response = await fetch("http://localhost:5000/api/users/signup", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: enteredName,
+            email: enteredEmail,
+            password: enteredPassword,
+          }),
+        });
+        const responseData = await response.json();
+        if (!response.ok) {
+          throw new Error(responseData.message);
+        }
+        console.log(responseData);
+        setIsLoading(false);
+        auth.login();
+      } catch (err) {
+        setIsLoading(false);
+        console.log(err);
+      }
+    }
   };
 
-  let formIsValid = enteredEmailIsValid && enteredPasswordIsValid;
+  let formIsValid = false;
+  if (isLoginMode) {
+    formIsValid = enteredEmailIsValid && enteredPasswordIsValid;
+  } else {
+    formIsValid =
+      enteredNameIsValid && enteredEmailIsValid && enteredPasswordIsValid;
+  }
 
   return (
     <Card className="authentication">
+      {isLoading && <LoadingSpinner asOverlay />}
       {!isLoginMode ? <h2>Register</h2> : <h2>Login</h2>}
       <form onSubmit={authSubmitHandler}>
         {!isLoginMode && (
