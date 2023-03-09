@@ -6,11 +6,16 @@ import useInput from "../../shared/hooks/use-input";
 import AuthContext from "../../shared/context/auth-context";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import useHttpClient from "../../shared/hooks/use-http-client";
 const Auth = () => {
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState();
+  const {
+    isLoading,
+    error,
+    sendRequest,
+    cleanError: errorHandler,
+  } = useHttpClient();
 
   const switchModeHandler = () => {
     setIsLoginMode((prevMode) => !prevMode);
@@ -46,30 +51,21 @@ const Auth = () => {
   const authSubmitHandler = async (e) => {
     e.preventDefault();
 
-    setIsLoading(true);
     if (isLoginMode) {
       try {
-        const response = await fetch("http://localhost:5000/api/users/login", {
+        await sendRequest("http://localhost:5000/api/users/login", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          "Content-Type": "application/json",
           body: JSON.stringify({
             email: enteredEmail,
             password: enteredPassword,
           }),
         });
-        const responseData = await response.json();
-        if (!response.ok) {
-          throw new Error(responseData.message);
-        }
-        setIsLoading(false);
         auth.login();
-      } catch (err) {
-        setIsLoading(false);
-        setError(err.message);
-      }
+      } catch (err) {}
     } else {
       try {
-        const response = await fetch("http://localhost:5000/api/users/signup", {
+        await sendRequest("http://localhost:5000/api/users/signup", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -78,16 +74,8 @@ const Auth = () => {
             password: enteredPassword,
           }),
         });
-        const responseData = await response.json();
-        if (!response.ok) {
-          throw new Error(responseData.message);
-        }
-        setIsLoading(false);
         auth.login();
-      } catch (err) {
-        setIsLoading(false);
-        setError(err.message);
-      }
+      } catch (err) {}
     }
   };
 
@@ -98,10 +86,6 @@ const Auth = () => {
     formIsValid =
       enteredNameIsValid && enteredEmailIsValid && enteredPasswordIsValid;
   }
-
-  const errorHandler = () => {
-    setError(null);
-  };
 
   return (
     <>

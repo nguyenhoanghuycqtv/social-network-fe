@@ -11,11 +11,13 @@ const Users = () => {
     error,
     sendRequest,
     cleanError: errorHandler,
-  } = useHttpClient({ url: "http://localhost:5000/api/users/", method: "GET" });
+  } = useHttpClient();
   useEffect(() => {
     const fetchUsers = async () => {
-      const responseData = await sendRequest();
-      console.log(responseData);
+      const responseData = await sendRequest(
+        "http://localhost:5000/api/users/",
+        { method: "GET" }
+      );
       setLoadedUsers(responseData.users);
     };
     fetchUsers();
