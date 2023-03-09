@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import PostList from "../components/PostList";
 import useHttpClient from "../../shared/hooks/use-http-client";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
@@ -19,17 +19,26 @@ const UserPosts = (props) => {
     const fetchPosts = async () => {
       try {
         const responeData = await sendRequest(
-          `http://localhost:5000/api/posts/user/640a0894d7d80cc83405866c`
+          `http://localhost:5000/api/posts/user/${userId}`
         );
         setLoadedPosts(responeData.posts);
-      } catch (err) {}
+      } catch (err) {
+        error.push(err);
+      }
     };
     fetchPosts();
   }, [sendRequest, userId]);
   console.log(loadedPosts);
   return (
     <React.Fragment>
-      {error && <ErrorModal error={error} onClick={errorHandler} />}
+      {error && (
+        <ErrorModal
+          error={error}
+          onClick={() => {
+            errorHandler();
+          }}
+        />
+      )}
       {isLoading && <LoadingSpinner />}
       {loadedPosts && <PostList items={loadedPosts} />}
     </React.Fragment>
