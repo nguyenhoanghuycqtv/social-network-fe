@@ -11,7 +11,7 @@ import AuthContext from "./shared/context/auth-context";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState(false);
+  const [userId, setUserId] = useState();
 
   const login = useCallback((uid) => {
     return setIsLoggedIn(true) & setUserId(uid), [];
@@ -19,7 +19,6 @@ const App = () => {
   const logout = useCallback(() => {
     return setIsLoggedIn(false) & setUserId(null);
   }, []);
-  console.log(userId);
   const router = createBrowserRouter([
     {
       path: "/",

@@ -14,10 +14,12 @@ const Users = () => {
   } = useHttpClient();
   useEffect(() => {
     const fetchUsers = async () => {
-      const responseData = await sendRequest(
-        "http://localhost:5000/api/users/"
-      );
-      setLoadedUsers(responseData.users);
+      try {
+        const responseData = await sendRequest(
+          "http://localhost:5000/api/users/"
+        );
+        setLoadedUsers(responseData.users);
+      } catch (err) {}
     };
     fetchUsers();
   }, [sendRequest]);

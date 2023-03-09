@@ -20,7 +20,7 @@ const PostList = (props) => {
         <PostItem
           key={item.id}
           id={item.id}
-          image={item.imageUrl}
+          image={item.image}
           title={item.title}
           content={item.content}
           creatorId={item.creator}
