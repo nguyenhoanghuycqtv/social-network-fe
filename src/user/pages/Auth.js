@@ -1,5 +1,5 @@
 import { useState, useContext } from "react";
-import { redirect } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Card from "../../shared/components/UIElements/Card";
 import "./Auth.css";
 import useInput from "../../shared/hooks/use-input";
@@ -8,6 +8,7 @@ import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import useHttpClient from "../../shared/hooks/use-http-client";
 const Auth = () => {
+  const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
   const {
@@ -53,28 +54,32 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        await sendRequest("http://localhost:5000/api/users/login", {
-          method: "POST",
-          "Content-Type": "application/json",
-          body: JSON.stringify({
+        const responeData = await sendRequest(
+          "http://localhost:5000/api/users/login",
+          "POST",
+          { "Content-Type": "application/json" },
+          JSON.stringify({
             email: enteredEmail,
             password: enteredPassword,
-          }),
-        });
-        auth.login();
+          })
+        );
+        auth.login(responeData.user.id);
+        navigate("/");
       } catch (err) {}
     } else {
       try {
-        await sendRequest("http://localhost:5000/api/users/signup", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
+        const responeData = await sendRequest(
+          "http://localhost:5000/api/users/signup",
+          "POST",
+          { "Content-Type": "application/json" },
+          JSON.stringify({
             name: enteredName,
             email: enteredEmail,
             password: enteredPassword,
-          }),
-        });
-        auth.login();
+          })
+        );
+        auth.login(responeData.user.id);
+        navigate("/");
       } catch (err) {}
     }
   };

@@ -11,8 +11,15 @@ import AuthContext from "./shared/context/auth-context";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const login = useCallback(() => setIsLoggedIn(true), []);
-  const logout = useCallback(() => setIsLoggedIn(false), []);
+  const [userId, setUserId] = useState(false);
+
+  const login = useCallback((uid) => {
+    return setIsLoggedIn(true) & setUserId(uid), [];
+  });
+  const logout = useCallback(() => {
+    return setIsLoggedIn(false) & setUserId(null);
+  }, []);
+  console.log(userId);
   const router = createBrowserRouter([
     {
       path: "/",
@@ -27,7 +34,7 @@ const App = () => {
     },
   ]);
   return (
-    <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+    <AuthContext.Provider value={{ isLoggedIn, userId: userId, login, logout }}>
       <RouterProvider router={router} />
     </AuthContext.Provider>
   );
