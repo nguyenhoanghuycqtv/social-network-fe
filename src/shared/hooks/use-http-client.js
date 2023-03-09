@@ -16,14 +16,14 @@ const useHttpClient = (requestConfig) => {
       if (!response.ok) {
         throw new Error(responseData.message);
       }
+      setIsLoading(false);
+      return responseData;
     } catch (err) {
+      setIsLoading(false);
       setError(err.message);
     }
-    setIsLoading(false);
   }, []);
-  
 
-  sendRequest();
   const cleanError = () => {
     setError(null);
   };
