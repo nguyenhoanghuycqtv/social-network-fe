@@ -7,6 +7,7 @@ import useHttpClient from "../../shared/hooks/use-http-client";
 import AuthContext from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import ImageUpload from "../../shared/components/FormElemens/ImageUpload";
 
 const NewPost = () => {
   const navigate = useNavigate();
@@ -43,14 +44,14 @@ const NewPost = () => {
       await sendRequest(
         "http://localhost:5000/api/posts",
         "POST",
-        { "Content-Type": "application/json" },
         JSON.stringify({
           title: enteredTitle,
           content: enteredContent,
           creator: auth.userId,
-        })
+        }),
+        { "Content-Type": "application/json" }
       );
-      navigate('/')
+      navigate("/");
     } catch (err) {}
   };
 

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../../shared/components/UIElements/Card";
 import "./Auth.css";
@@ -7,10 +7,12 @@ import AuthContext from "../../shared/context/auth-context";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import useHttpClient from "../../shared/hooks/use-http-client";
+import ImageUpload from "../../shared/components/FormElemens/ImageUpload";
 const Auth = () => {
   const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [file, setFile] = useState({ value: null, isValid: undefined });
   const {
     isLoading,
     error,
@@ -57,26 +59,27 @@ const Auth = () => {
         const responeData = await sendRequest(
           "http://localhost:5000/api/users/login",
           "POST",
-          { "Content-Type": "application/json" },
           JSON.stringify({
             email: enteredEmail,
             password: enteredPassword,
-          })
+          }),
+          { "Content-Type": "application/json" }
         );
         auth.login(responeData.user.id);
         navigate("/");
       } catch (err) {}
     } else {
       try {
+        const formData = new FormData();
+        formData.append("name", enteredName);
+        formData.append("image", file.value);
+        formData.append("email", enteredEmail);
+        formData.append("password", enteredPassword);
+
         const responeData = await sendRequest(
           "http://localhost:5000/api/users/signup",
           "POST",
-          { "Content-Type": "application/json" },
-          JSON.stringify({
-            name: enteredName,
-            email: enteredEmail,
-            password: enteredPassword,
-          })
+          formData
         );
         auth.login(responeData.user.id);
         navigate("/");
@@ -91,6 +94,11 @@ const Auth = () => {
     formIsValid =
       enteredNameIsValid && enteredEmailIsValid && enteredPasswordIsValid;
   }
+
+  const handleFileUpload = (pickedFile, fileIsValid) => {
+    const imageUploaded = { value: pickedFile, isValid: fileIsValid };
+    setFile(imageUploaded);
+  };
 
   return (
     <>
@@ -111,6 +119,9 @@ const Auth = () => {
               />
               {nameInputHasError && <p>Invalid Name</p>}
             </div>
+          )}
+          {!isLoginMode && (
+            <ImageUpload id="image" center onInput={handleFileUpload} />
           )}
           <div>
             <label htmlFor="email">E-Mail</label>

@@ -1,11 +1,11 @@
 import { useCallback, useState } from "react";
 
-const useHttpClient = (requestConfig) => {
+const useHttpClient = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState();
 
   const sendRequest = useCallback(
-    async (url, method = "GET", headers = {}, body = null ) => {
+    async (url, method = "GET", body = null, headers = {}) => {
       setIsLoading(true);
       try {
         const response = await fetch(url, {
