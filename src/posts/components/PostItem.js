@@ -7,14 +7,16 @@ const PostItem = (props) => {
     <li className="post-item">
       <Card className="post-item__content">
         <div className="post-item__image">
-          <img src={props.image} alt={props.content} />
+          <img
+            src={`http://localhost:5000/${props.image}`}
+            alt={props.content}
+          />
         </div>
         <div className="post-item__info">
           <h2>{props.title}</h2>
           <p>{props.content}</p>
         </div>
-        <div className="post-item__action">
-        </div>
+        <div className="post-item__action"></div>
       </Card>
     </li>
   );

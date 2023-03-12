@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import "./NewPost.css";
 import { useNavigate } from "react-router-dom";
 import useInput from "../../shared/hooks/use-input";
@@ -11,7 +11,7 @@ import ImageUpload from "../../shared/components/FormElemens/ImageUpload";
 
 const NewPost = () => {
   const navigate = useNavigate();
-
+  const [file, setFile] = useState({ value: null, isValid: undefined });
   const auth = useContext(AuthContext);
   const {
     value: enteredTitle,
@@ -40,22 +40,24 @@ const NewPost = () => {
 
   const postSubmitHandler = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append("title", enteredTitle);
+    formData.append("content", enteredContent);
+    formData.append("image", file.value);
+    formData.append("creator", auth.userId);
+
     try {
-      await sendRequest(
-        "http://localhost:5000/api/posts",
-        "POST",
-        JSON.stringify({
-          title: enteredTitle,
-          content: enteredContent,
-          creator: auth.userId,
-        }),
-        { "Content-Type": "application/json" }
-      );
+      await sendRequest("http://localhost:5000/api/posts", "POST", formData);
       navigate("/");
     } catch (err) {}
   };
 
   let formIsValid = enteredContentIsValid && enteredTitleIsValid;
+
+  const handleFileUpload = (pickedFile, fileIsValid) => {
+    const imageUploaded = { value: pickedFile, isValid: fileIsValid };
+    setFile(imageUploaded);
+  };
 
   return (
     <React.Fragment>
@@ -87,6 +89,7 @@ const NewPost = () => {
             />
             {contentInputHasError && <p>invalid content</p>}
           </div>
+          <ImageUpload id="image" center onInput={handleFileUpload} />
           <div>
             <button type="submit" disabled={!formIsValid}>
               Submit
