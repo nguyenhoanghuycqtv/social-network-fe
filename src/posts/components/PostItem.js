@@ -1,8 +1,25 @@
-import React from "react";
-import "./PostItem.css";
+import React, { useContext } from "react";
+import useHttpClient from "../../shared/hooks/use-http-client";
 import Card from "../../shared/components/UIElements/Card";
+import AuthContext from "../../shared/context/auth-context";
+import "./PostItem.css";
 
 const PostItem = (props) => {
+  const auth = useContext(AuthContext);
+  const { isLoading, error, sendRequest, cleanError } = useHttpClient();
+  const deleteHandler = async () => {
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/posts/${props.id}`,
+        "DELETE",
+        null,
+        {
+          Authorization: "Bearer " + auth.token,
+        }
+      );
+    } catch (err) {}
+  };
+
   return (
     <li className="post-item">
       <Card className="post-item__content">
@@ -16,7 +33,9 @@ const PostItem = (props) => {
           <h2>{props.title}</h2>
           <p>{props.content}</p>
         </div>
-        <div className="post-item__action"></div>
+        <div className="post-item__action">
+          <button onClick={deleteHandler}>Delete</button>
+        </div>
       </Card>
     </li>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import PostList from "../components/PostList";
 import useHttpClient from "../../shared/hooks/use-http-client";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
@@ -28,7 +28,6 @@ const UserPosts = (props) => {
     };
     fetchPosts();
   }, [sendRequest, userId]);
-  console.log(loadedPosts);
   return (
     <React.Fragment>
       {error && (
