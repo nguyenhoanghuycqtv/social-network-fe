@@ -47,7 +47,9 @@ const NewPost = () => {
     formData.append("creator", auth.userId);
 
     try {
-      await sendRequest("http://localhost:5000/api/posts", "POST", formData);
+      await sendRequest("http://localhost:5000/api/posts", "POST", formData, {
+        Authorization: "Bearer " + auth.token,
+      });
       navigate("/");
     } catch (err) {}
   };

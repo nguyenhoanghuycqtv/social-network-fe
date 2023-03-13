@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Users from "./user/pages/Users";
@@ -8,17 +8,11 @@ import Root from "./shared/components/Root/Root";
 import Error from "./shared/components/Error/Error";
 import Auth from "./user/pages/Auth";
 import AuthContext from "./shared/context/auth-context";
+import useAuth from "./shared/hooks/use-auth";
 
 const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userId, setUserId] = useState();
+  const { userId, token, login, logout } = useAuth();
 
-  const login = useCallback((uid) => {
-    return setIsLoggedIn(true) & setUserId(uid), [];
-  });
-  const logout = useCallback(() => {
-    return setIsLoggedIn(false) & setUserId(null);
-  }, []);
   const router = createBrowserRouter([
     {
       path: "/",
@@ -27,13 +21,15 @@ const App = () => {
       children: [
         { index: true, element: <Users /> },
         { path: "/:userId/posts", element: <UserPosts /> },
-        { path: "/posts/new", element: <NewPost /> },
         { path: "/auth", element: <Auth /> },
+        { path: "/posts/new", element: token && <NewPost /> },
       ],
     },
   ]);
   return (
-    <AuthContext.Provider value={{ isLoggedIn, userId: userId, login, logout }}>
+    <AuthContext.Provider
+      value={{ isLoggedIn: !!token, token, userId: userId, login, logout }}
+    >
       <RouterProvider router={router} />
     </AuthContext.Provider>
   );

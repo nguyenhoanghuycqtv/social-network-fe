@@ -1,4 +1,4 @@
-import { useState, useContext, useCallback } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../../shared/components/UIElements/Card";
 import "./Auth.css";
@@ -65,7 +65,7 @@ const Auth = () => {
           }),
           { "Content-Type": "application/json" }
         );
-        auth.login(responeData.user.id);
+        auth.login(responeData.userId, responeData.token);
         navigate("/");
       } catch (err) {}
     } else {
@@ -81,7 +81,7 @@ const Auth = () => {
           "POST",
           formData
         );
-        auth.login(responeData.user.id);
+        auth.login(responeData.userId, responeData.token);
         navigate("/");
       } catch (err) {}
     }
