@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams } from "react-router-dom";
 import PostList from "../components/PostList";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
@@ -7,20 +7,18 @@ import useAxios from "../../shared/hooks/use-http";
 
 const UserPosts = (props) => {
   const userId = useParams().userId;
+  const [error, setError] = useState(null);
 
-  const { response, loading, error, errorHandler } = useAxios({
+  const { response, loading } = useAxios({
     url: `http://localhost:5000/api/posts/user/${userId}`,
   });
-  if (response) {
-    console.log(response.posts);
-  }
   return (
     <React.Fragment>
       {error && (
         <ErrorModal
           error={error}
           onClick={() => {
-            errorHandler();
+            setError(null);
           }}
         />
       )}
