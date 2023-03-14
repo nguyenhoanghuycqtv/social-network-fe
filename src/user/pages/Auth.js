@@ -6,19 +6,16 @@ import useInput from "../../shared/hooks/use-input";
 import AuthContext from "../../shared/context/auth-context";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
-import useHttpClient from "../../shared/hooks/use-http-client";
 import ImageUpload from "../../shared/components/FormElemens/ImageUpload";
+import useAxios from "../../shared/hooks/use-http";
 const Auth = () => {
-  const navigate = useNavigate();
   const auth = useContext(AuthContext);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [error, setError] = useState(null);
   const [file, setFile] = useState({ value: null, isValid: undefined });
-  const {
-    isLoading,
-    error,
-    sendRequest,
-    cleanError: errorHandler,
-  } = useHttpClient();
+
+  const { loading, fetchData } = useAxios({});
+  const navigate = useNavigate();
 
   const switchModeHandler = () => {
     setIsLoginMode((prevMode) => !prevMode);
@@ -56,17 +53,15 @@ const Auth = () => {
 
     if (isLoginMode) {
       try {
-        const responeData = await sendRequest(
-          "http://localhost:5000/api/users/login",
-          "POST",
-          JSON.stringify({
-            email: enteredEmail,
-            password: enteredPassword,
-          }),
-          { "Content-Type": "application/json" }
-        );
-        auth.login(responeData.userId, responeData.token);
-        navigate("/");
+        const responseData =  await fetchData({
+          url: "http://localhost:5000/api/users/login",
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          data: { email: enteredEmail, password: enteredPassword },
+        });
+        console.log(responseData)
+        auth.login(responseData.userId, responseData.token);
+        navigate('/')
       } catch (err) {}
     } else {
       try {
@@ -75,13 +70,12 @@ const Auth = () => {
         formData.append("image", file.value);
         formData.append("email", enteredEmail);
         formData.append("password", enteredPassword);
-
-        const responeData = await sendRequest(
-          "http://localhost:5000/api/users/signup",
-          "POST",
-          formData
-        );
-        auth.login(responeData.userId, responeData.token);
+        const responseData = await fetchData({
+          url: "http://localhost:5000/api/users/signup",
+          method: "POST",
+          data: formData,
+        });
+        auth.login(responseData.userId, responseData.token);
         navigate("/");
       } catch (err) {}
     }
@@ -102,9 +96,16 @@ const Auth = () => {
 
   return (
     <>
-      {error && <ErrorModal error={error} onClick={errorHandler} />}
+      {error && (
+        <ErrorModal
+          error={error}
+          onClick={() => {
+            setError(null);
+          }}
+        />
+      )}
       <Card className="authentication">
-        {isLoading && <LoadingSpinner asOverlay />}
+        {loading && <LoadingSpinner asOverlay />}
         {!isLoginMode ? <h2>Register</h2> : <h2>Login</h2>}
         <form onSubmit={authSubmitHandler}>
           {!isLoginMode && (

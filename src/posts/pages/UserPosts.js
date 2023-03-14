@@ -1,33 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useParams } from "react-router-dom";
 import PostList from "../components/PostList";
-import useHttpClient from "../../shared/hooks/use-http-client";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import useAxios from "../../shared/hooks/use-http";
 
 const UserPosts = (props) => {
-  const [loadedPosts, setLoadedPosts] = useState();
-  const {
-    isLoading,
-    error,
-    sendRequest,
-    cleanError: errorHandler,
-  } = useHttpClient();
   const userId = useParams().userId;
 
-  useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const responeData = await sendRequest(
-          `http://localhost:5000/api/posts/user/${userId}`
-        );
-        setLoadedPosts(responeData.posts);
-      } catch (err) {
-        error.push(err);
-      }
-    };
-    fetchPosts();
-  }, [sendRequest, userId]);
+  const { response, loading, error, errorHandler } = useAxios({
+    url: `http://localhost:5000/api/posts/user/${userId}`,
+  });
+  if (response) {
+    console.log(response.posts);
+  }
   return (
     <React.Fragment>
       {error && (
@@ -38,8 +24,8 @@ const UserPosts = (props) => {
           }}
         />
       )}
-      {isLoading && <LoadingSpinner />}
-      {loadedPosts && <PostList items={loadedPosts} />}
+      {loading && <LoadingSpinner />}
+      {!loading && response && <PostList items={response.posts} />}
     </React.Fragment>
   );
 };

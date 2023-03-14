@@ -3,14 +3,15 @@ import "./NewPost.css";
 import { useNavigate } from "react-router-dom";
 import useInput from "../../shared/hooks/use-input";
 import Card from "../../shared/components/UIElements/Card";
-import useHttpClient from "../../shared/hooks/use-http-client";
 import AuthContext from "../../shared/context/auth-context";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ImageUpload from "../../shared/components/FormElemens/ImageUpload";
+import useAxios from "../../shared/hooks/use-http";
 
 const NewPost = () => {
   const navigate = useNavigate();
+  const [error, setError] = useState(null);
   const [file, setFile] = useState({ value: null, isValid: undefined });
   const auth = useContext(AuthContext);
   const {
@@ -31,12 +32,7 @@ const NewPost = () => {
     reset: resetContent,
   } = useInput((enteredContent) => enteredContent.trim() !== "");
 
-  const {
-    isLoading,
-    error,
-    sendRequest,
-    cleanError: errorHandler,
-  } = useHttpClient();
+  const { loading, fetchData } = useAxios({});
 
   const postSubmitHandler = async (e) => {
     e.preventDefault();
@@ -45,13 +41,20 @@ const NewPost = () => {
     formData.append("content", enteredContent);
     formData.append("image", file.value);
     formData.append("creator", auth.userId);
+    if (formData) {
+      try {
+        await fetchData({
+          url: "http://localhost:5000/api/posts",
+          method: "POST",
+          headers: { Authorization: "Bearer " + auth.token },
+          data: formData,
+        });
 
-    try {
-      await sendRequest("http://localhost:5000/api/posts", "POST", formData, {
-        Authorization: "Bearer " + auth.token,
-      });
-      navigate("/");
-    } catch (err) {}
+        navigate("/");
+      } catch (err) {
+        console.log(err);
+      }
+    }
   };
 
   let formIsValid = enteredContentIsValid && enteredTitleIsValid;
@@ -63,8 +66,15 @@ const NewPost = () => {
 
   return (
     <React.Fragment>
-      {error && <ErrorModal error={error} onClick={errorHandler} />}
-      {isLoading && <LoadingSpinner />}
+      {error && (
+        <ErrorModal
+          error={error}
+          onClick={() => {
+            setError(null);
+          }}
+        />
+      )}
+      {loading && <LoadingSpinner />}
       <Card className="new-post">
         <h2>New Post</h2>
         <form onSubmit={postSubmitHandler}>

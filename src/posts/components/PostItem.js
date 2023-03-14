@@ -1,23 +1,23 @@
 import React, { useContext } from "react";
-import useHttpClient from "../../shared/hooks/use-http-client";
 import Card from "../../shared/components/UIElements/Card";
 import AuthContext from "../../shared/context/auth-context";
 import "./PostItem.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import useAxios from "../../shared/hooks/use-http";
 
 const PostItem = (props) => {
   const auth = useContext(AuthContext);
-  const { isLoading, error, sendRequest, cleanError } = useHttpClient();
+  const navigate = useNavigate();
+  const { fetchData } = useAxios({});
   const deleteHandler = async () => {
     try {
-      await sendRequest(
-        `http://localhost:5000/api/posts/${props.id}`,
-        "DELETE",
-        null,
-        {
-          Authorization: "Bearer " + auth.token,
-        }
-      );
+      await fetchData({
+        url: `http://localhost:5000/api/posts/${props.id}`,
+        method: "DELETE",
+        headers: { Authorization: "Bearer " + auth.token },
+      });
+
+      navigate("/");
     } catch (err) {}
   };
 
