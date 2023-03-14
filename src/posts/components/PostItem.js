@@ -3,6 +3,7 @@ import useHttpClient from "../../shared/hooks/use-http-client";
 import Card from "../../shared/components/UIElements/Card";
 import AuthContext from "../../shared/context/auth-context";
 import "./PostItem.css";
+import { Link } from "react-router-dom";
 
 const PostItem = (props) => {
   const auth = useContext(AuthContext);
@@ -34,6 +35,9 @@ const PostItem = (props) => {
           <p>{props.content}</p>
         </div>
         <div className="post-item__action">
+          <button>
+            <Link to={`/posts/${props.id}`}>Update</Link>
+          </button>
           <button onClick={deleteHandler}>Delete</button>
         </div>
       </Card>

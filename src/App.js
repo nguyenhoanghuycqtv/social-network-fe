@@ -9,6 +9,7 @@ import Error from "./shared/components/Error/Error";
 import Auth from "./user/pages/Auth";
 import AuthContext from "./shared/context/auth-context";
 import useAuth from "./shared/hooks/use-auth";
+import UpdatePost from "./posts/pages/UpdatePost";
 
 const App = () => {
   const { userId, token, login, logout } = useAuth();
@@ -23,6 +24,7 @@ const App = () => {
         { path: "/:userId/posts", element: <UserPosts /> },
         { path: "/auth", element: <Auth /> },
         { path: "/posts/new", element: token && <NewPost /> },
+        { path: "/posts/:postId", element: <UpdatePost /> },
       ],
     },
   ]);
