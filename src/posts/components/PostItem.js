@@ -35,10 +35,12 @@ const PostItem = (props) => {
           <p>{props.content}</p>
         </div>
         <div className="post-item__action">
-          <button>
+          <button className="btn btn-warning">
             <Link to={`/posts/${props.id}`}>Update</Link>
           </button>
-          <button onClick={deleteHandler}>Delete</button>
+          <button className="btn btn-error" onClick={deleteHandler}>
+            Delete
+          </button>
         </div>
       </Card>
     </li>
